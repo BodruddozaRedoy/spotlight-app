@@ -18,7 +18,7 @@ export default defineSchema ({
         userId: v.id("users"),
         imageUrl: v.string(),
         storageId: v.id("_storage"),
-        caption: v.optional.(v.string()),
+        caption: v.optional(v.string()),
         likes: v.number(),
         comments: v.number(),
     }).index("by_user", ["userId"]),
@@ -37,5 +37,18 @@ export default defineSchema ({
     follows: defineTable({
         followerId: v.id("users"),
         followingId: v.id("users")
-    }).index("by_follower", ["followerId"]).index("by_following", ["followingId"]).index("by_both", ["followerId", "followingId"])
+    }).index("by_follower", ["followerId"]).index("by_following", ["followingId"]).index("by_both", ["followerId", "followingId"]),
+
+    notifications: defineTable({
+        receiverId: v.id("users"),
+        senderId: v.id("users"),
+        type: v.union(v.literal("like"), v.literal("comment"), v.literal("follow")),
+        postId: v.optional(v.id("posts")),
+        commentId: v.optional(v.id("comments")),
+    }).index("by_receiver", ["receiverId"]),
+    
+    bookmarks: defineTable({
+        userId: v.id("users"),
+        postId: v.id("posts"),
+    }).index("by_user", ["userId"]).index("by_post", ["postId"]).index("by_user_and_post", ["userId", "postId"])
 })
