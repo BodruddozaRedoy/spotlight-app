@@ -9,14 +9,16 @@ http.route({
   path: "/clerk-webhook",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
+    console.log("Webhook received");
     const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
     if (!webhookSecret) {
       throw new Error("Missing env of webhook secret");
     }
-    const svix_id = request.headers.get("svix_id");
-    const svix_signature = request.headers.get("svix_signature");
-    const svix_timestamp = request.headers.get("svix_timestamp");
+    const svix_id = request.headers.get("svix-id");
+    const svix_signature = request.headers.get("svix-signature");
+    const svix_timestamp = request.headers.get("svix-timestamp");
 
+    // console.log("svix",svix_id, svix_signature, svix_timestamp)
     if (!svix_id || !svix_signature || !svix_timestamp)
       return new Response("Error occurred -- no svix headers", {
         status: 400,
@@ -42,7 +44,7 @@ http.route({
     const eventType = evt.type;
     if (eventType === "user.created") {
       const { id, email_addresses, first_name, last_name, image_url } = evt.data;
-
+      console.log("evt data", evt?.data)
       const email = email_addresses[0].email_address;
       const name = `${first_name || ""} ${last_name || ""}`.trim();
 
