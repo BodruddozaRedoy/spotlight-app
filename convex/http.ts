@@ -41,7 +41,7 @@ http.route({
 
     const eventType = evt.type;
     if (eventType === "user.created") {
-      const { id, email_address, first_name, last_name, image_url } = evt.data;
+      const { id, email_addresses, first_name, last_name, image_url } = evt.data;
 
       const email = email_address[0].email_address;
       const name = `${first_name || ""} ${last_name || ""}`.trim();
