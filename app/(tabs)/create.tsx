@@ -7,6 +7,8 @@ import { styles } from '@/styles/create.styles'
 import { Ionicons } from '@expo/vector-icons'
 import { Colors } from 'react-native/Libraries/NewAppScreen'
 import * as ImagePicker from 'expo-image-picker';
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 
 export default function CreateScreen() {
   const router = useRouter()
@@ -21,10 +23,24 @@ export default function CreateScreen() {
       allowsEditing: true,
       aspect: [3, 2],
       quality: 0.8
+
     })
     if (!result.canceled) setSelectedImage(result.assets[0].uri)
   }
-  console.log(selectedImage)
+
+  const generateUploadUrl = useMutation(api.posts.generateUploadUrl)
+  const createPost = useMutation(api.posts.createPost)
+
+  const handleShare = async () => {
+    if(!selectedImage) return
+
+    try {
+      
+    } catch (error) {
+      
+    }
+  }
+
   if (!selectedImage) {
     return (
       <View style={styles.container}>
@@ -47,7 +63,7 @@ export default function CreateScreen() {
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 0}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
     >
       <View style={styles.contentContainer}>
         {/* Header  */}
@@ -95,7 +111,7 @@ export default function CreateScreen() {
                 <TextInput
                   style={styles.captionInput}
                   placeholder='Write a caption...'
-                  placeholderTextColor={Colors.gray}
+                  placeholderTextColor={Colors.white}
                   multiline
                   value={caption}
                   onChangeText={setCaption}
